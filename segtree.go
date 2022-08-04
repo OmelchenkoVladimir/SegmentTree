@@ -99,9 +99,9 @@ func (t *Segtree) Set(index int, value TreeElem) error {
 	t.tree[i] = value
 	for par := (i - 1) >> 1; par >= 0; par = (i - 1) >> 1 {
 		if i%2 == 0 {
-			t.tree[par] = t.op(t.tree[i], t.tree[i-1])
-		} else {
 			t.tree[par] = t.op(t.tree[i-1], t.tree[i])
+		} else {
+			t.tree[par] = t.op(t.tree[i], t.tree[i+1])
 		}
 		i = par
 	}
@@ -116,9 +116,9 @@ func (t *Segtree) Apply(index int, value TreeElem) error { // Apply Operation(el
 	t.tree[i] = t.op(t.tree[i], value)
 	for par := (i - 1) >> 1; par >= 0; par = (i - 1) >> 1 {
 		if i%2 == 0 {
-			t.tree[par] = t.op(t.tree[i], t.tree[i-1])
-		} else {
 			t.tree[par] = t.op(t.tree[i-1], t.tree[i])
+		} else {
+			t.tree[par] = t.op(t.tree[i], t.tree[i+1])
 		}
 		i = par
 	}
