@@ -69,15 +69,17 @@ func (t Segtree) implQuery(left, right int) TreeElem {
 		if left%2 == 0 {
 			leftRes = t.op(leftRes, t.tree[left])
 		}
+		//left--
 		left /= 2
 		if right%2 == 1 {
 			rightRes = t.op(t.tree[right], rightRes)
 		}
+		//right--
 		right /= 2
 		right--
 	}
 	if left == right {
-		leftRes = t.op(leftRes, t.tree[left])
+		leftRes = t.op(leftRes, t.tree[left]) //left
 	}
 	return t.op(leftRes, rightRes)
 }
@@ -95,8 +97,13 @@ func (t *Segtree) Set(index int, value TreeElem) error {
 	}
 	i := t.lazyN - 1 + index
 	t.tree[i] = value
-	for i = (i - 1) >> 1; i >= 0; i = (i - 1) >> 1 {
-		t.tree[i] = t.op(t.tree[i], value)
+	for par := (i - 1) >> 1; par >= 0; par = (i - 1) >> 1 {
+		if i%2 == 0 {
+			t.tree[par] = t.op(t.tree[i], t.tree[i-1])
+		} else {
+			t.tree[par] = t.op(t.tree[i-1], t.tree[i])
+		}
+		i = par
 	}
 	return nil
 }
@@ -107,8 +114,13 @@ func (t *Segtree) Apply(index int, value TreeElem) error { // Apply Operation(el
 	}
 	i := t.lazyN - 1 + index
 	t.tree[i] = t.op(t.tree[i], value)
-	for i = (i - 1) >> 1; i >= 0; i = (i - 1) >> 1 {
-		t.tree[i] = t.op(t.tree[i], value)
+	for par := (i - 1) >> 1; par >= 0; par = (i - 1) >> 1 {
+		if i%2 == 0 {
+			t.tree[par] = t.op(t.tree[i], t.tree[i-1])
+		} else {
+			t.tree[par] = t.op(t.tree[i-1], t.tree[i])
+		}
+		i = par
 	}
 	return nil
 }
